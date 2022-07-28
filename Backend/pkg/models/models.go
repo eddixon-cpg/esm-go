@@ -8,9 +8,9 @@ import (
 
 type Employee struct {
 	gorm.Model
-	EmployeeId    int
-	Name          string
-	JoiningData   time.Time
-	DesignationId int
-	email         string
+	EmployeeId    int       `json:"employeeId"`
+	Name          string    `json:"name"`
+	JoiningData   time.Time `json:"joiningData"`
+	DesignationId int       `json:"designationId"`
+	Email         string    `json:"email"`
 }
