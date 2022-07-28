@@ -21,3 +21,18 @@ var Employees = []models.Employee{
 		Email:         "marmor@mail.com",
 	},
 }
+
+var Skills = []models.Skill{
+	{
+		SkillId: 1,
+		Name:    "Python",
+	},
+	{
+		SkillId: 2,
+		Name:    "Go",
+	},
+	{
+		SkillId: 1,
+		Name:    "C#",
+	},
+}

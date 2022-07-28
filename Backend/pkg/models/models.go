@@ -14,3 +14,9 @@ type Employee struct {
 	DesignationId int       `json:"designationId"`
 	Email         string    `json:"email"`
 }
+
+type Skill struct {
+	gorm.Model
+	SkillId int
+	Name    string
+}
