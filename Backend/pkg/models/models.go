@@ -1,20 +1,22 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type Employee struct {
-	gorm.Model
-	EmployeeId int    `json:"employeeId" gorm:"primaryKey"`
-	Name       string `json:"name"`
-	//JoiningData   time.Time `json:"joiningData"`
-	DesignationId int    `json:"designationId"`
-	Email         string `json:"email"`
+	//gorm.Model
+	EmployeeId    int       `json:"employeeId" gorm:"primaryKey;autoIncrement:true"`
+	Name          string    `json:"name"`
+	JoiningData   time.Time `json:"joiningData"`
+	DesignationId int       `json:"designationId"`
+	Email         string    `json:"email"`
+	//CreatedAt     time.Time `gorm:"autoCreateTime:true"`
+	//UpdatedAt     time.Time `gorm:"autoUpdateTime:false"`
 }
 
 type Skill struct {
-	gorm.Model
+	//gorm.Model
 	SkillId int    `json:"skillId" gorm:"primaryKey"`
-	Name    string `json:"nameId"`
+	Name    string `json:"name"`
 }

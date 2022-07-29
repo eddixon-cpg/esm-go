@@ -19,10 +19,9 @@ func Init() *gorm.DB {
 		log.Fatalln(err)
 	}
 
-	log.Println("Migrating")
 	db.AutoMigrate(&models.Employee{})
-	//db.AutoMigrate(&models.Employee{})
+	db.AutoMigrate(&models.Skill{})
 
-	//db.AutoMigrate(&models.Skill{})
+	log.Println("Migrated")
 	return db
 }

@@ -22,10 +22,10 @@ func main() {
 	})
 
 	router.HandleFunc("/employee", h.GetAllEmployees).Methods(http.MethodGet)
-	router.HandleFunc("/employee/{id}", handlers.GetEmployee).Methods(http.MethodGet)
-	router.HandleFunc("/employee", handlers.AddEmployee).Methods(http.MethodPost)
-	router.HandleFunc("/employee/{id}", handlers.UpdateEmployee).Methods(http.MethodPut)
-	router.HandleFunc("/employee/{id}", handlers.DeleteEmployee).Methods(http.MethodDelete)
+	router.HandleFunc("/employee/{id}", h.GetEmployee).Methods(http.MethodGet)
+	router.HandleFunc("/employee", h.AddEmployee).Methods(http.MethodPost)
+	router.HandleFunc("/employee/{id}", h.UpdateEmployee).Methods(http.MethodPut)
+	router.HandleFunc("/employee/{id}", h.DeleteEmployee).Methods(http.MethodDelete)
 
 	router.HandleFunc("/skill", handlers.GetAllSkills).Methods(http.MethodGet)
 	router.HandleFunc("/skill/{id}", handlers.GetSkill).Methods(http.MethodGet)

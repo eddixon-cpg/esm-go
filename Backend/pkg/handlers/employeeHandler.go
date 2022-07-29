@@ -1,13 +1,12 @@
 package handlers
 
 import (
-	"ESM-backend-app/pkg/mocks"
 	"ESM-backend-app/pkg/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
+
 	"net/http"
 	"strconv"
 
@@ -16,7 +15,9 @@ import (
 
 func (h Handler) GetAllEmployees(w http.ResponseWriter, r *http.Request) {
 	var employees []models.Employee
+
 	log.Println("Trying to get employees")
+
 	if result := h.DB.Find(&employees); result.Error != nil {
 		fmt.Println(result.Error)
 	}
@@ -26,24 +27,23 @@ func (h Handler) GetAllEmployees(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(employees)
 }
 
-func GetEmployee(w http.ResponseWriter, r *http.Request) {
+func (h Handler) GetEmployee(w http.ResponseWriter, r *http.Request) {
 	// Read dynamic id parameter
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	// Iterate over all the mock data
-	for _, book := range mocks.Employees {
-		if book.EmployeeId == id {
-			// If ids are equal item  as response
-			w.Header().Add("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(book)
-			break
-		}
+	var employee models.Employee
+
+	if result := h.DB.First(&employee, id); result.Error != nil {
+		fmt.Println(result.Error)
 	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(employee)
 }
 
-func AddEmployee(w http.ResponseWriter, r *http.Request) {
+func (h Handler) AddEmployee(w http.ResponseWriter, r *http.Request) {
 	// Read to request body
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
@@ -56,8 +56,11 @@ func AddEmployee(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &employee)
 
 	// Append to the Book mocks
-	employee.EmployeeId = rand.Intn(100)
-	mocks.Employees = append(mocks.Employees, employee)
+	//employee.EmployeeId = rand.Intn(100)
+	//mocks.Employees = append(mocks.Employees, employee)
+	if result := h.DB.Create(&employee); result.Error != nil {
+		fmt.Println(result.Error)
+	}
 
 	// Send a 201 created response
 	w.Header().Add("Content-Type", "application/json")
@@ -65,7 +68,7 @@ func AddEmployee(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("Created")
 }
 
-func UpdateEmployee(w http.ResponseWriter, r *http.Request) {
+func (h Handler) UpdateEmployee(w http.ResponseWriter, r *http.Request) {
 	// Read dynamic id parameter
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
@@ -81,40 +84,38 @@ func UpdateEmployee(w http.ResponseWriter, r *http.Request) {
 	var updatedEmployee models.Employee
 	json.Unmarshal(body, &updatedEmployee)
 
-	// Iterate over all the mock Books
-	for index, employee := range mocks.Employees {
-		if employee.EmployeeId == id {
-			// Update and send response when book Id matches dynamic Id
-			employee.Name = updatedEmployee.Name
-			//employee.JoiningData = updatedEmployee.JoiningData
-			employee.DesignationId = updatedEmployee.DesignationId
-			employee.Email = updatedEmployee.Email
+	var employee models.Employee
 
-			mocks.Employees[index] = employee
-
-			w.Header().Add("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode("Updated")
-			break
-		}
+	if result := h.DB.First(&employee, id); result.Error != nil {
+		fmt.Println(result.Error)
 	}
+
+	employee.Name = updatedEmployee.Name
+	employee.JoiningData = updatedEmployee.JoiningData
+	employee.DesignationId = updatedEmployee.DesignationId
+	employee.Email = updatedEmployee.Email
+
+	h.DB.Save(&employee)
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("Updated")
 }
 
-func DeleteEmployee(w http.ResponseWriter, r *http.Request) {
+func (h Handler) DeleteEmployee(w http.ResponseWriter, r *http.Request) {
 	// Read the dynamic id parameter
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	// Iterate over all the mock Books
-	for index, book := range mocks.Employees {
-		if book.EmployeeId == id {
-			// Delete book and send response if the book Id matches dynamic Id
-			mocks.Employees = append(mocks.Employees[:index], mocks.Employees[index+1:]...)
+	var employee models.Employee
 
-			w.Header().Add("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode("Deleted")
-			break
-		}
+	if result := h.DB.First(&employee, id); result.Error != nil {
+		fmt.Println(result.Error)
 	}
+
+	h.DB.Delete(&employee)
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("Deleted")
 }
