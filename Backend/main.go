@@ -27,10 +27,10 @@ func main() {
 	router.HandleFunc("/employee/{id}", h.UpdateEmployee).Methods(http.MethodPut)
 	router.HandleFunc("/employee/{id}", h.DeleteEmployee).Methods(http.MethodDelete)
 
-	router.HandleFunc("/skill", handlers.GetAllSkills).Methods(http.MethodGet)
-	router.HandleFunc("/skill/{id}", handlers.GetSkill).Methods(http.MethodGet)
-	router.HandleFunc("/skill", handlers.AddSkill).Methods(http.MethodPost)
-	router.HandleFunc("/skill/{id}", handlers.DeleteSkill).Methods(http.MethodDelete)
+	router.HandleFunc("/skill", h.GetAllSkills).Methods(http.MethodGet)
+	router.HandleFunc("/skill/{id}", h.GetSkill).Methods(http.MethodGet)
+	router.HandleFunc("/skill", h.AddSkill).Methods(http.MethodPost)
+	router.HandleFunc("/skill/{id}", h.DeleteSkill).Methods(http.MethodDelete)
 
 	http.ListenAndServe(":4000", router)
 	log.Println("API is running @ port 4000 !")

@@ -1,42 +1,48 @@
 package handlers
 
 import (
-	"ESM-backend-app/pkg/mocks"
 	"ESM-backend-app/pkg/models"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
 )
 
-func GetAllSkills(w http.ResponseWriter, r *http.Request) {
+func (h Handler) GetAllSkills(w http.ResponseWriter, r *http.Request) {
+	var skills []models.Skill
+
+	log.Println("Trying to get employees")
+
+	if result := h.DB.Find(&skills); result.Error != nil {
+		fmt.Println(result.Error)
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(mocks.Skills)
+	json.NewEncoder(w).Encode(skills)
 }
 
-func GetSkill(w http.ResponseWriter, r *http.Request) {
+func (h Handler) GetSkill(w http.ResponseWriter, r *http.Request) {
 	// Read dynamic id parameter
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	// Iterate over all the mock data
-	for _, book := range mocks.Employees {
-		if book.EmployeeId == id {
-			// If ids are equal send item as response
-			w.Header().Add("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(book)
-			break
-		}
+	var skill models.Skill
+
+	if result := h.DB.First(&skill, id); result.Error != nil {
+		fmt.Println(result.Error)
 	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(skill)
 }
 
-func AddSkill(w http.ResponseWriter, r *http.Request) {
+func (h Handler) AddSkill(w http.ResponseWriter, r *http.Request) {
 	// Read to request body
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
@@ -48,9 +54,9 @@ func AddSkill(w http.ResponseWriter, r *http.Request) {
 	var skill models.Skill
 	json.Unmarshal(body, &skill)
 
-	// Append to the Book mocks
-	skill.SkillId = rand.Intn(100)
-	mocks.Skills = append(mocks.Skills, skill)
+	if result := h.DB.Create(&skill); result.Error != nil {
+		fmt.Println(result.Error)
+	}
 
 	// Send a 201 created response
 	w.Header().Add("Content-Type", "application/json")
@@ -58,21 +64,20 @@ func AddSkill(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("Created")
 }
 
-func DeleteSkill(w http.ResponseWriter, r *http.Request) {
+func (h Handler) DeleteSkill(w http.ResponseWriter, r *http.Request) {
 	// Read the dynamic id parameter
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	// Iterate over all the mock Books
-	for index, skill := range mocks.Skills {
-		if skill.SkillId == id {
-			// Delete book and send response if the book Id matches dynamic Id
-			mocks.Skills = append(mocks.Skills[:index], mocks.Skills[index+1:]...)
+	var skill models.Skill
 
-			w.Header().Add("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode("Deleted")
-			break
-		}
+	if result := h.DB.First(&skill, id); result.Error != nil {
+		fmt.Println(result.Error)
 	}
+
+	h.DB.Delete(&skill)
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("Deleted")
 }
