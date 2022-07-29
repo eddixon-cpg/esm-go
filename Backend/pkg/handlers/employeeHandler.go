@@ -1,9 +1,10 @@
-package employee
+package handlers
 
 import (
 	"ESM-backend-app/pkg/mocks"
 	"ESM-backend-app/pkg/models"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -13,10 +14,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetAllEmployees(w http.ResponseWriter, r *http.Request) {
+func (h Handler) GetAllEmployees(w http.ResponseWriter, r *http.Request) {
+	var employees []models.Employee
+	log.Println("Trying to get employees")
+	if result := h.DB.Find(&employees); result.Error != nil {
+		fmt.Println(result.Error)
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(mocks.Employees)
+	json.NewEncoder(w).Encode(employees)
 }
 
 func GetEmployee(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +86,7 @@ func UpdateEmployee(w http.ResponseWriter, r *http.Request) {
 		if employee.EmployeeId == id {
 			// Update and send response when book Id matches dynamic Id
 			employee.Name = updatedEmployee.Name
-			employee.JoiningData = updatedEmployee.JoiningData
+			//employee.JoiningData = updatedEmployee.JoiningData
 			employee.DesignationId = updatedEmployee.DesignationId
 			employee.Email = updatedEmployee.Email
 

@@ -1,4 +1,4 @@
-package skill
+package handlers
 
 import (
 	"ESM-backend-app/pkg/mocks"
