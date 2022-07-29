@@ -55,9 +55,6 @@ func (h Handler) AddEmployee(w http.ResponseWriter, r *http.Request) {
 	var employee models.Employee
 	json.Unmarshal(body, &employee)
 
-	// Append to the Book mocks
-	//employee.EmployeeId = rand.Intn(100)
-	//mocks.Employees = append(mocks.Employees, employee)
 	if result := h.DB.Create(&employee); result.Error != nil {
 		fmt.Println(result.Error)
 	}
