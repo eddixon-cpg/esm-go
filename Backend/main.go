@@ -32,6 +32,9 @@ func main() {
 	router.HandleFunc("/skill", h.AddSkill).Methods(http.MethodPost)
 	router.HandleFunc("/skill/{id}", h.DeleteSkill).Methods(http.MethodDelete)
 
+	router.HandleFunc("/login", h.LoginUser).Methods(http.MethodPost)
+	router.HandleFunc("/signup", h.SignupUser).Methods(http.MethodPost)
+
 	http.ListenAndServe(":4000", router)
 	log.Println("API is running @ port 4000 !")
 }

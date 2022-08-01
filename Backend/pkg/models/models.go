@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Employee struct {
@@ -19,4 +21,12 @@ type Skill struct {
 	//gorm.Model
 	SkillId int    `json:"skillId" gorm:"primaryKey"`
 	Name    string `json:"name"`
+}
+
+type User struct {
+	gorm.Model
+	Name     string `json:"name"`
+	Email    string `gorm:"unique" json:"email"`
+	Username string `gorm:"unique" json:"username"`
+	Password string `json:"password"`
 }

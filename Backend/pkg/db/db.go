@@ -21,6 +21,7 @@ func Init() *gorm.DB {
 
 	db.AutoMigrate(&models.Employee{})
 	db.AutoMigrate(&models.Skill{})
+	db.AutoMigrate(&models.User{})
 
 	log.Println("Migrated")
 	return db
