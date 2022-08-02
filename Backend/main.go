@@ -3,7 +3,7 @@ package main
 import (
 	"ESM-backend-app/pkg/db"
 	"ESM-backend-app/pkg/handlers"
-
+	"ESM-backend-app/pkg/middleware"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -21,7 +21,7 @@ func main() {
 		json.NewEncoder(w).Encode("Hello World")
 	})
 
-	router.HandleFunc("/employee", h.GetAllEmployees).Methods(http.MethodGet)
+	router.HandleFunc("/employee", middleware.CheckAuth(h.GetAllEmployees)).Methods(http.MethodGet)
 	router.HandleFunc("/employee/{id}", h.GetEmployee).Methods(http.MethodGet)
 	router.HandleFunc("/employee", h.AddEmployee).Methods(http.MethodPost)
 	router.HandleFunc("/employee/{id}", h.UpdateEmployee).Methods(http.MethodPut)

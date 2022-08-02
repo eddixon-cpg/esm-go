@@ -64,6 +64,27 @@ func GenerateJwtToken(payload out.Payload) (string, error) {
 	*/
 }
 
+func VerifyJwtToken(strToken string) (*out.Claims, error) {
+	key := []byte(JWT_SECRET)
+
+	claims := &out.Claims{}
+
+	token, err := jwt.ParseWithClaims(strToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return key, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			return claims, fmt.Errorf("invalid token signature")
+		}
+	}
+
+	if !token.Valid {
+		return claims, fmt.Errorf("invalid token")
+	}
+
+	return claims, nil
+}
+
 func RespondWithJSON(w http.ResponseWriter, v interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(v)

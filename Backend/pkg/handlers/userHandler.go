@@ -82,6 +82,7 @@ func (h Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//TODO : changing to  hashing
 	if User.Password != credentials.Password {
 		helpers.ApiError(w, http.StatusNotFound, "Invalid Credentials!")
 		return
