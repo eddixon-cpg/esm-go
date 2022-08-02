@@ -22,15 +22,15 @@ func main() {
 	})
 
 	router.HandleFunc("/employee", middleware.CheckAuth(h.GetAllEmployees)).Methods(http.MethodGet)
-	router.HandleFunc("/employee/{id}", h.GetEmployee).Methods(http.MethodGet)
-	router.HandleFunc("/employee", h.AddEmployee).Methods(http.MethodPost)
-	router.HandleFunc("/employee/{id}", h.UpdateEmployee).Methods(http.MethodPut)
-	router.HandleFunc("/employee/{id}", h.DeleteEmployee).Methods(http.MethodDelete)
+	router.HandleFunc("/employee/{id}", middleware.CheckAuth(h.GetEmployee)).Methods(http.MethodGet)
+	router.HandleFunc("/employee", middleware.CheckAuth(h.AddEmployee)).Methods(http.MethodPost)
+	router.HandleFunc("/employee/{id}", middleware.CheckAuth(h.UpdateEmployee)).Methods(http.MethodPut)
+	router.HandleFunc("/employee/{id}", middleware.CheckAuth(h.DeleteEmployee)).Methods(http.MethodDelete)
 
-	router.HandleFunc("/skill", h.GetAllSkills).Methods(http.MethodGet)
-	router.HandleFunc("/skill/{id}", h.GetSkill).Methods(http.MethodGet)
-	router.HandleFunc("/skill", h.AddSkill).Methods(http.MethodPost)
-	router.HandleFunc("/skill/{id}", h.DeleteSkill).Methods(http.MethodDelete)
+	router.HandleFunc("/skill", middleware.CheckAuth(h.GetAllSkills)).Methods(http.MethodGet)
+	router.HandleFunc("/skill/{id}", middleware.CheckAuth(h.GetSkill)).Methods(http.MethodGet)
+	router.HandleFunc("/skill", middleware.CheckAuth(h.AddSkill)).Methods(http.MethodPost)
+	router.HandleFunc("/skill/{id}", middleware.CheckAuth(h.DeleteSkill)).Methods(http.MethodDelete)
 
 	router.HandleFunc("/login", h.LoginUser).Methods(http.MethodPost)
 	router.HandleFunc("/signup", h.SignupUser).Methods(http.MethodPost)
