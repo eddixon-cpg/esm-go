@@ -62,13 +62,13 @@ func (h Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	User := models.User{}
 
 	type Credentials struct {
-		Id       string `json:"id"`
+		UserName string `json:"userName"`
 		Password string `json:"password"`
 	}
 	credentials := Credentials{}
 	json.NewDecoder(r.Body).Decode(&credentials)
 
-	if len(credentials.Id) < 3 {
+	if len(credentials.UserName) < 3 {
 		helpers.ApiError(w, http.StatusBadRequest, "Invalid Username/Email!")
 		return
 	}
@@ -78,7 +78,7 @@ func (h Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if results := h.DB.Where("username = ? OR email = ?", credentials.Id, credentials.Id).First(&User); results.Error != nil || results.RowsAffected < 1 {
+	if results := h.DB.Where("username = ? OR email = ?", credentials.UserName, credentials.UserName).First(&User); results.Error != nil || results.RowsAffected < 1 {
 		helpers.ApiError(w, http.StatusNotFound, "Invalid Username/Email, Please Signup!")
 		return
 	}

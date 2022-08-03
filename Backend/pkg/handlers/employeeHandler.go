@@ -21,7 +21,7 @@ func (h Handler) GetAllEmployees(w http.ResponseWriter, r *http.Request) {
 	if result := h.DB.Find(&employees); result.Error != nil {
 		fmt.Println(result.Error)
 	}
-	log.Println(employees)
+	//log.Println(employees)
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(employees)
