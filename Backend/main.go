@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 
+	hndlr "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -34,7 +35,18 @@ func main() {
 
 	router.HandleFunc("/login", h.LoginUser).Methods(http.MethodPost)
 	router.HandleFunc("/signup", h.SignupUser).Methods(http.MethodPost)
+	router.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header")
+	})
 
-	http.ListenAndServe(":4000", router)
-	log.Println("API is running @ port 4000 !")
+	log.Println("API listen at port 4000 !")
+	err := http.ListenAndServe(":4000", hndlr.CORS(
+		hndlr.AllowedHeaders([]string{"X-Requested-With", "Access-Control-Allow-Origin", "Content-Type", "Authorization"}),
+		hndlr.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),
+		hndlr.AllowedOrigins([]string{"*"}))(router))
+	if err != nil {
+		log.Fatal(err)
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"ESM-backend-app/pkg/models"
 	"ESM-backend-app/pkg/models/out"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -12,7 +13,7 @@ func (h Handler) SignupUser(w http.ResponseWriter, r *http.Request) {
 
 	User := models.User{}
 	json.NewDecoder(r.Body).Decode(&User)
-
+	log.Println("Signin up user " + User.Username)
 	if len(User.Name) < 3 {
 		helpers.ApiError(w, http.StatusBadRequest, "Name should be at least 3 characters long!")
 		return
