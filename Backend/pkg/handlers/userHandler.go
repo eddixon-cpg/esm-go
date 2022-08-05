@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func (h Handler) SignupUser(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +56,6 @@ func (h Handler) SignupUser(w http.ResponseWriter, r *http.Request) {
 		Token: token,
 		User:  User,
 	})
-
 }
 
 func (h Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
@@ -105,4 +105,25 @@ func (h Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		Token: token,
 		User:  User,
 	})
+}
+
+func (h Handler) Verify(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+	bearerToken := strings.Split(authHeader, " ")
+	if len(bearerToken) < 2 {
+		helpers.ApiError(w, http.StatusForbidden, "Token not provided!")
+		return
+	}
+
+	token := bearerToken[1]
+	last10 := token[len(token)-10:]
+	log.Println("verifiying token ended with..." + last10)
+
+	claims, err := helpers.VerifyJwtToken(token)
+
+	if err != nil {
+		helpers.ApiError(w, http.StatusForbidden, err.Error())
+		return
+	}
+	helpers.RespondWithJSON(w, claims)
 }

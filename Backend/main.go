@@ -35,6 +35,9 @@ func main() {
 
 	router.HandleFunc("/login", h.LoginUser).Methods(http.MethodPost)
 	router.HandleFunc("/signup", h.SignupUser).Methods(http.MethodPost)
+
+	router.HandleFunc("/verify", h.Verify).Methods(http.MethodGet)
+
 	router.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
