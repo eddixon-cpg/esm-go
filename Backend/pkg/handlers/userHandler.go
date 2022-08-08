@@ -35,6 +35,14 @@ func (h Handler) SignupUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	hashedPassword, err := helpers.GeneratehashPassword(User.Password)
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
+
+	User.Password = hashedPassword
+
 	if result := h.DB.Create(&User); result.Error != nil {
 		helpers.ApiError(w, http.StatusInternalServerError, "Failed To Add new User in database! \n"+result.Error.Error())
 		return
@@ -84,7 +92,8 @@ func (h Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//TODO : changing to  hashing
-	if User.Password != credentials.Password {
+	check := helpers.CheckPasswordHash(credentials.Password, User.Password)
+	if !check {
 		helpers.ApiError(w, http.StatusNotFound, "Invalid Credentials!")
 		return
 	}
