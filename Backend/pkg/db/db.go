@@ -20,7 +20,7 @@ func Init() *gorm.DB {
 	}
 
 	db.AutoMigrate(&models.Employee{})
-	//db.AutoMigrate(&models.Designation{})
+	db.AutoMigrate(&models.Designation{})
 	//db.AutoMigrate(&models.Skill{})
 	db.AutoMigrate(&models.User{})
 

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"ESM-backend-app/pkg/helpers"
 	"ESM-backend-app/pkg/models"
 	"encoding/json"
 	"fmt"
@@ -59,7 +60,9 @@ func (h Handler) AddEmployee(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(employee)
 
 	if result := h.DB.Create(&employee); result.Error != nil {
-		log.Panicln(result.Error)
+		fmt.Println("error ", result.Error)
+		helpers.ApiError(w, http.StatusForbidden, result.Error.Error())
+		return
 	}
 
 	// Send a 201 created response
