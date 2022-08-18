@@ -55,8 +55,11 @@ func (h Handler) AddEmployee(w http.ResponseWriter, r *http.Request) {
 	var employee models.Employee
 	json.Unmarshal(body, &employee)
 
+	fmt.Println("Adding employee ...")
+	fmt.Println(employee)
+
 	if result := h.DB.Create(&employee); result.Error != nil {
-		fmt.Println(result.Error)
+		log.Panicln(result.Error)
 	}
 
 	// Send a 201 created response
@@ -88,7 +91,7 @@ func (h Handler) UpdateEmployee(w http.ResponseWriter, r *http.Request) {
 	}
 
 	employee.Name = updatedEmployee.Name
-	employee.JoiningData = updatedEmployee.JoiningData
+	employee.JoiningDate = updatedEmployee.JoiningDate
 	employee.DesignationId = updatedEmployee.DesignationId
 	employee.Email = updatedEmployee.Email
 
