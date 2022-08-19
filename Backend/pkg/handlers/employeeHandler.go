@@ -17,16 +17,25 @@ import (
 
 func (h Handler) GetAllEmployees(w http.ResponseWriter, r *http.Request) {
 	var employees []models.Employee
+	var employeesOut []out.EmployeeOut
 
 	log.Println("Trying to get employees")
 
+	h.DB.Table("employees").
+		Select("employees.employee_id, employees.name, employees.last_name, employees.joining_date, employees.designation_id, employees.email, designations.name as Designation").
+		Joins("left join designations on employees.designation_id = designations.designation_id").
+		Scan(&employeesOut)
+
+	fmt.Println(employeesOut)
+
 	if result := h.DB.Find(&employees); result.Error != nil {
-		fmt.Println(result.Error)
+		fmt.Println("error ", result.Error)
+		helpers.ApiError(w, http.StatusForbidden, result.Error.Error())
 	}
 	//log.Println(employees)
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(employees)
+	json.NewEncoder(w).Encode(employeesOut)
 }
 
 func (h Handler) GetEmployee(w http.ResponseWriter, r *http.Request) {
