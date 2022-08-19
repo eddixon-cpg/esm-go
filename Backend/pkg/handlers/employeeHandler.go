@@ -3,6 +3,7 @@ package handlers
 import (
 	"ESM-backend-app/pkg/helpers"
 	"ESM-backend-app/pkg/models"
+	"ESM-backend-app/pkg/models/out"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -33,10 +34,20 @@ func (h Handler) GetEmployee(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 
-	var employee models.Employee
+	var employee out.EmployeeOut
 
-	if result := h.DB.First(&employee, id); result.Error != nil {
-		fmt.Println(result.Error)
+	h.DB.Model(&models.Employee{}).
+		Select("employees.employee_id, employees.name, employees.last_name, employees.joining_date, employees.designation_id, employees.email, designations.name as Designation").
+		Joins("left join designations on employees.designation_id = designations.designation_id").Where("employees.employee_id = ?", id).
+		Scan(&employee)
+
+	fmt.Println(employee)
+
+	if employee.EmployeeId == 0 {
+		errorMessage := "error : employee not found"
+		fmt.Println(errorMessage)
+		helpers.ApiError(w, http.StatusNoContent, errorMessage)
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/json")

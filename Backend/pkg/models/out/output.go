@@ -2,6 +2,7 @@ package out
 
 import (
 	"ESM-backend-app/pkg/models"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -22,4 +23,14 @@ type Claims struct {
 	Email    string `json:"email"`
 	Id       uint   `json:"id"`
 	jwt.StandardClaims
+}
+
+type EmployeeOut struct {
+	EmployeeId    int
+	Name          string
+	LastName      string
+	JoiningDate   time.Time
+	DesignationId int
+	Email         string
+	Designation   string
 }
