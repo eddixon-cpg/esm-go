@@ -33,9 +33,10 @@ func main() {
 	router.HandleFunc("/skill", middleware.CheckAuth(h.AddSkill)).Methods(http.MethodPost)
 	router.HandleFunc("/skill/{id}", middleware.CheckAuth(h.DeleteSkill)).Methods(http.MethodDelete)
 
+	router.HandleFunc("/assing-skill", middleware.CheckAuth(h.AssingSkill)).Methods(http.MethodPost)
+
 	router.HandleFunc("/login", h.LoginUser).Methods(http.MethodPost)
 	router.HandleFunc("/signup", h.SignupUser).Methods(http.MethodPost)
-
 	router.HandleFunc("/verify", h.Verify).Methods(http.MethodGet)
 
 	router.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

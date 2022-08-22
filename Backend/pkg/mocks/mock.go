@@ -23,15 +23,15 @@ var Employees = []models.Employee{
 
 var Skills = []models.Skill{
 	{
-		SkillId: 1,
-		Name:    "Python",
+		//SkillId: 1,
+		Name: "Python",
 	},
 	{
-		SkillId: 2,
-		Name:    "Go",
+		//SkillId: 2,
+		Name: "Go",
 	},
 	{
-		SkillId: 1,
-		Name:    "C#",
+		//SkillId: 1,
+		Name: "C#",
 	},
 }

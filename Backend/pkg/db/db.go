@@ -21,8 +21,11 @@ func Init() *gorm.DB {
 
 	db.AutoMigrate(&models.Employee{})
 	db.AutoMigrate(&models.Designation{})
-	//db.AutoMigrate(&models.Skill{})
+	db.AutoMigrate(&models.Skill{})
+	db.AutoMigrate(&models.EmployeeSkill{})
+	db.AutoMigrate(&models.Level{})
 	db.AutoMigrate(&models.User{})
+	//db.SetupJoinTable(&models.Employee{}, "skills", &models.EmployeesSkill{})
 
 	log.Println("Migrated")
 	return db
