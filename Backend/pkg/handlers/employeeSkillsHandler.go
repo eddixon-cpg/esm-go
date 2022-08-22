@@ -8,11 +8,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
-func (h Handler) AssingSkill(w http.ResponseWriter, r *http.Request) {
+func (h Handler) AssignSkill(w http.ResponseWriter, r *http.Request) {
 	// Read to request body
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
@@ -24,7 +26,7 @@ func (h Handler) AssingSkill(w http.ResponseWriter, r *http.Request) {
 	var input in.EmployeeSkill
 	json.Unmarshal(body, &input)
 
-	fmt.Println("Assignin skill to employee ...")
+	fmt.Println("Assigning skill to employee ...")
 	fmt.Println(input)
 
 	var employeeSkill models.EmployeeSkill
@@ -43,4 +45,32 @@ func (h Handler) AssingSkill(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode("Created")
+}
+
+func (h Handler) RemoveSkill(w http.ResponseWriter, r *http.Request) {
+	// Read dynamic id parameter
+	vars := mux.Vars(r)
+	employeeid, _ := strconv.Atoi(vars["employeeid"])
+	skillid, _ := strconv.Atoi(vars["skillid"])
+
+	fmt.Println("deleting skill from employee ... ", employeeid, skillid)
+	var employeeSkill models.EmployeeSkill
+	h.DB.Where("employee_employee_id = ? AND skill_skill_id = ?", employeeid, skillid).First(&employeeSkill)
+
+	message := ""
+	if employeeSkill.Employee_employee_id == 0 || employeeSkill.Skill_skill_id == 0 {
+		message = "Record not found"
+	} else {
+		message = "Deleted"
+	}
+	//h.DB.Where("employee_employee_id = ? AND skill_skill_id = ?", employeeid, skillid).Delete(&models.EmployeeSkill{}).Error
+	err := h.DB.Delete(&models.EmployeeSkill{}, "employee_employee_id = ? AND skill_skill_id = ?", employeeid, skillid).Error
+	if err != nil {
+		fmt.Println(err)
+		helpers.ApiError(w, http.StatusForbidden, err.Error())
+		return
+	}
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(message)
 }
