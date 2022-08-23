@@ -47,7 +47,8 @@ func (h Handler) GetEmployee(w http.ResponseWriter, r *http.Request) {
 
 	h.DB.Model(&models.Employee{}).
 		Select("employees.employee_id, employees.name, employees.last_name, employees.joining_date, employees.designation_id, employees.email, designations.name as Designation").
-		Joins("left join designations on employees.designation_id = designations.designation_id").Where("employees.employee_id = ?", id).
+		Joins("left join designations on employees.designation_id = designations.designation_id").
+		Where("employees.employee_id = ?", id).
 		Scan(&employee)
 
 	fmt.Println(employee)

@@ -4,6 +4,7 @@ import (
 	"ESM-backend-app/pkg/helpers"
 	"ESM-backend-app/pkg/models"
 	"ESM-backend-app/pkg/models/in"
+	"ESM-backend-app/pkg/models/out"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -73,4 +74,20 @@ func (h Handler) RemoveSkill(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(message)
+}
+
+func (h Handler) GetEmpployeeSkills(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	employeeid, _ := strconv.Atoi(vars["employeeid"])
+	var employeeSkills []out.EmployeSkillsOut
+
+	h.DB.Table("employee_skills es").
+		Select("s.name as Skill, l.name as Level, es.Experience as Experience").
+		Joins("inner join levels l on l.level_id = es.level_id inner join skills s on s.skill_id = es.skill_skill_id").
+		Where("es.Employee_employee_id = ?", employeeid).
+		Scan(&employeeSkills)
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(employeeSkills)
 }

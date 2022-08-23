@@ -34,3 +34,9 @@ type EmployeeOut struct {
 	Email         string
 	Designation   string
 }
+
+type EmployeSkillsOut struct {
+	Skill      string
+	Level      string
+	Experience int
+}

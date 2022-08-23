@@ -41,6 +41,7 @@ type EmployeeSkill struct {
 	Skill_skill_id       int `gorm:"primaryKey;joinForeignKey"`
 	LevelId              int
 	Experience           int
+	Level                Level
 }
 
 type Level struct {
