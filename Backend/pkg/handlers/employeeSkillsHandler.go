@@ -91,3 +91,13 @@ func (h Handler) GetEmpployeeSkills(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(employeeSkills)
 }
+
+func (h Handler) SkillLevel(w http.ResponseWriter, r *http.Request) {
+	var levels []models.Level
+
+	h.DB.Find(&levels)
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(levels)
+}

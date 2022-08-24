@@ -37,6 +37,8 @@ func main() {
 	router.HandleFunc("/remove-skill/{employeeid}/{skillid}", middleware.CheckAuth(h.RemoveSkill)).Methods(http.MethodDelete)
 	router.HandleFunc("/employee-skills/{employeeid}", middleware.CheckAuth(h.GetEmpployeeSkills)).Methods(http.MethodGet)
 
+	router.HandleFunc("/level", h.SkillLevel).Methods(http.MethodGet)
+
 	router.HandleFunc("/login", h.LoginUser).Methods(http.MethodPost)
 	router.HandleFunc("/signup", h.SignupUser).Methods(http.MethodPost)
 	router.HandleFunc("/verify", h.Verify).Methods(http.MethodGet)
