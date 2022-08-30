@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"ESM-backend-app/pkg/helpers"
 	"ESM-backend-app/pkg/models"
 	"encoding/json"
 	"fmt"
@@ -54,8 +55,13 @@ func (h Handler) AddSkill(w http.ResponseWriter, r *http.Request) {
 	var skill models.Skill
 	json.Unmarshal(body, &skill)
 
+	fmt.Println("Adding skiLL ...")
+	fmt.Println(skill)
+
 	if result := h.DB.Create(&skill); result.Error != nil {
 		fmt.Println(result.Error)
+		helpers.ApiError(w, http.StatusForbidden, result.Error.Error())
+		return
 	}
 
 	// Send a 201 created response

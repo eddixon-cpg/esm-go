@@ -3,7 +3,6 @@ package main
 import (
 	"ESM-backend-app/pkg/db"
 	"ESM-backend-app/pkg/handlers"
-	"ESM-backend-app/pkg/middleware"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -22,20 +21,20 @@ func main() {
 		json.NewEncoder(w).Encode("Hello World")
 	})
 
-	router.HandleFunc("/employee", middleware.CheckAuth(h.GetAllEmployees)).Methods(http.MethodGet)
-	router.HandleFunc("/employee/{id}", middleware.CheckAuth(h.GetEmployee)).Methods(http.MethodGet)
-	router.HandleFunc("/employee", middleware.CheckAuth(h.AddEmployee)).Methods(http.MethodPost)
-	router.HandleFunc("/employee/{id}", middleware.CheckAuth(h.UpdateEmployee)).Methods(http.MethodPut)
-	router.HandleFunc("/employee/{id}", middleware.CheckAuth(h.DeleteEmployee)).Methods(http.MethodDelete)
+	router.HandleFunc("/employee", h.GetAllEmployees).Methods(http.MethodGet)
+	router.HandleFunc("/employee/{id}", h.GetEmployee).Methods(http.MethodGet)
+	router.HandleFunc("/employee", h.AddEmployee).Methods(http.MethodPost)
+	router.HandleFunc("/employee/{id}", h.UpdateEmployee).Methods(http.MethodPut)
+	router.HandleFunc("/employee/{id}", h.DeleteEmployee).Methods(http.MethodDelete)
 
-	router.HandleFunc("/skill", middleware.CheckAuth(h.GetAllSkills)).Methods(http.MethodGet)
-	router.HandleFunc("/skill/{id}", middleware.CheckAuth(h.GetSkill)).Methods(http.MethodGet)
-	router.HandleFunc("/skill", middleware.CheckAuth(h.AddSkill)).Methods(http.MethodPost)
-	router.HandleFunc("/skill/{id}", middleware.CheckAuth(h.DeleteSkill)).Methods(http.MethodDelete)
+	router.HandleFunc("/skill", h.GetAllSkills).Methods(http.MethodGet)
+	router.HandleFunc("/skill/{id}", h.GetSkill).Methods(http.MethodGet)
+	router.HandleFunc("/skill", h.AddSkill).Methods(http.MethodPost)
+	router.HandleFunc("/skill/{id}", h.DeleteSkill).Methods(http.MethodDelete)
 
-	router.HandleFunc("/assign-skill", middleware.CheckAuth(h.AssignSkill)).Methods(http.MethodPost)
-	router.HandleFunc("/remove-skill/{employeeid}/{skillid}", middleware.CheckAuth(h.RemoveSkill)).Methods(http.MethodDelete)
-	router.HandleFunc("/employee-skills/{employeeid}", middleware.CheckAuth(h.GetEmpployeeSkills)).Methods(http.MethodGet)
+	router.HandleFunc("/assign-skill", h.AssignSkill).Methods(http.MethodPost)
+	router.HandleFunc("/remove-skill/{employeeid}/{skillid}", h.RemoveSkill).Methods(http.MethodDelete)
+	router.HandleFunc("/employee-skills/{employeeid}", h.GetEmpployeeSkills).Methods(http.MethodGet)
 
 	router.HandleFunc("/level", h.SkillLevel).Methods(http.MethodGet)
 
