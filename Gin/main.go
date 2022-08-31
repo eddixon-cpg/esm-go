@@ -4,6 +4,7 @@ import (
 	"esm-backend/configuration"
 	"esm-backend/controllers"
 	"esm-backend/db"
+	"esm-backend/middlewares"
 	"fmt"
 
 	"github.com/gin-contrib/cors"
@@ -15,9 +16,14 @@ func main() {
 	configuration := configuration.GetConfiguration()
 	address := fmt.Sprintf("localhost:%d", configuration.Port)
 
+	router := getRouter(configuration) //.Methods(http.MethodPost)
+
+	router.Run(address)
+}
+
+func getRouter(configuration configuration.Config) *gin.Engine {
 	DB := db.Init(configuration)
 	handler := controllers.New(DB)
-
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:  []string{"*"},
@@ -30,8 +36,8 @@ func main() {
 	router.POST("/signup", handler.Signup)
 	router.GET("/verify", handler.Verify)
 
-	router.GET("/employee", handler.GetAllEmployees) //.Methods(http.MethodGet)
-	router.POST("/employee", handler.AddEmployee)    //.Methods(http.MethodPost)
+	router.GET("/employee", handler.GetAllEmployees)                      //.Methods(http.MethodGet)
+	router.Use(middlewares.Auth()).POST("/employee", handler.AddEmployee) //.Methods(http.MethodPost)
 
-	router.Run(address)
+	return router
 }
