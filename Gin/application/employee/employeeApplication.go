@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func AddEmployee(employeeIn in.EmployeeIn, db *gorm.DB) (err error) {
+func AddEmployee(employeeIn in.EmployeeInput, db *gorm.DB) (err error) {
 	var employee domain.Employee
 	email := strings.ToLower(employeeIn.Email)
 

@@ -26,9 +26,9 @@ func main() {
 		ExposeHeaders: []string{"Content-Length"},
 	}))
 
-	router.POST("/login", controllers.Login)
-	router.POST("/signup", controllers.Signup)
-	router.GET("/verify", controllers.Verify)
+	router.POST("/login", handler.Login)
+	router.POST("/signup", handler.Signup)
+	router.GET("/verify", handler.Verify)
 
 	router.GET("/employee", handler.GetAllEmployees) //.Methods(http.MethodGet)
 	router.POST("/employee", handler.AddEmployee)    //.Methods(http.MethodPost)

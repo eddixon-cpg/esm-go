@@ -28,7 +28,7 @@ func (h DbHandler) GetAllEmployees(c *gin.Context) {
 
 func (h DbHandler) AddEmployee(c *gin.Context) {
 	fmt.Println("AddEmployee")
-	var employee in.EmployeeIn
+	var employee in.EmployeeInput
 	if err := c.ShouldBindJSON(&employee); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
