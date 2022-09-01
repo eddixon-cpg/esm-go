@@ -27,3 +27,15 @@ type UserInput struct {
 	Username string `json:"userName"`
 	Password string `json:"password"`
 }
+
+type SkillInput struct {
+	SkillId int    `json:"skillId"`
+	Name    string `json:"name"`
+}
+
+type EmployeeSkillInput struct {
+	EmployeId  int `json:"employeId"`
+	SkillId    int `json:"skillId"`
+	Level      int `json:"level"`
+	Experience int `json:"experience"`
+}

@@ -23,9 +23,9 @@ func Init(configuration configuration.Config) *gorm.DB {
 
 	db.AutoMigrate(&domain.Employee{})
 	db.AutoMigrate(&domain.Designation{})
-	//db.AutoMigrate(&domain.Skill{})
-	//db.AutoMigrate(&domain.EmployeeSkill{})
-	//db.AutoMigrate(&domain.Level{})
+	db.AutoMigrate(&domain.Skill{})
+	db.AutoMigrate(&domain.EmployeeSkill{})
+	db.AutoMigrate(&domain.Level{})
 	db.AutoMigrate(&domain.User{})
 	//db.SetupJoinTable(&domain.Employee{}, "skills", &domain.EmployeesSkill{})
 

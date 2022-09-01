@@ -4,7 +4,7 @@ import (
 	app "esm-backend/application/employee"
 
 	"esm-backend/models/in"
-	"fmt"
+
 	"net/http"
 	"strconv"
 
@@ -28,7 +28,7 @@ func (h DbHandler) GetAllEmployees(c *gin.Context) {
 }
 
 func (h DbHandler) GetEmployee(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Query("id"))
+	id, _ := strconv.Atoi(c.Param("id"))
 	employee, err := app.GetEmployee(id, h.DB)
 
 	if err != nil {
@@ -45,7 +45,6 @@ func (h DbHandler) GetEmployee(c *gin.Context) {
 }
 
 func (h DbHandler) AddEmployee(c *gin.Context) {
-	fmt.Println("AddEmployee")
 	var employee in.EmployeeInput
 	if err := c.ShouldBindJSON(&employee); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -62,7 +61,7 @@ func (h DbHandler) AddEmployee(c *gin.Context) {
 }
 
 func (h DbHandler) UpdateEmployee(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Query("id"))
+	id, _ := strconv.Atoi(c.Param("id"))
 
 	var employee in.EmployeeInput
 	if err := c.ShouldBindJSON(&employee); err != nil {
@@ -81,7 +80,7 @@ func (h DbHandler) UpdateEmployee(c *gin.Context) {
 }
 
 func (h DbHandler) DeleteEmployee(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Query("id"))
+	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := app.DeleteEmployee(id, h.DB)
 	if err != nil {

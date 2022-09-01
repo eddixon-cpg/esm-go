@@ -41,3 +41,20 @@ type ResponseOutput struct {
 	User  UserOut
 	Token string
 }
+
+type SkillOutput struct {
+	SkillId int    `json:"skillId"`
+	Name    string `json:"name"`
+}
+
+type EmployeSkillsOutput struct {
+	Skill      string
+	Level      string
+	Experience int
+}
+
+type LevelOutput struct {
+	LevelId int    ` gorm:"primaryKey;autoIncrement:true"`
+	Name    string `gorm:"type:varchar(20)"`
+	Order   int
+}

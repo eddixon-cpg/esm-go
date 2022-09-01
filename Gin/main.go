@@ -53,11 +53,21 @@ func authRoutes(superRoute *gin.RouterGroup) {
 func apiRoutes(superRoute *gin.RouterGroup) {
 	router := superRoute.Group("/api")
 	{
-		router.GET("/employee", handler.GetAllEmployees)
-		router.GET("/employee/:id", handler.GetEmployee)
+		router.Use(middlewares.Auth()).GET("/employee", handler.GetAllEmployees)
+		router.Use(middlewares.Auth()).GET("/employee/:id", handler.GetEmployee)
 		router.Use(middlewares.Auth()).POST("/employee", handler.AddEmployee)
-		router.PUT("/employee/:id", handler.UpdateEmployee)
-		router.DELETE("/employee/:id", handler.DeleteEmployee)
+		router.Use(middlewares.Auth()).PUT("/employee/:id", handler.UpdateEmployee)
+		router.Use(middlewares.Auth()).DELETE("/employee/:id", handler.DeleteEmployee)
+
+		router.Use(middlewares.Auth()).GET("/skill", handler.GetAllSkills)
+		router.Use(middlewares.Auth()).GET("/skill/:id", handler.GetSkill)
+		router.Use(middlewares.Auth()).POST("/skill", handler.AddSkill)
+		router.Use(middlewares.Auth()).DELETE("/skill/:id", handler.DeleteSkill)
+		router.Use(middlewares.Auth()).POST("/assign-skill", handler.AssignSkill)
+		router.Use(middlewares.Auth()).DELETE("/remove-skill/:employeeid/:skillid", handler.RemoveSkill)
+		router.Use(middlewares.Auth()).GET("/employee-skills/:employeeid", handler.GetEmployeeSkills)
+		router.Use(middlewares.Auth()).GET("/level", handler.SkillLevel)
+
 	}
 }
 
