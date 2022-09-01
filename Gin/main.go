@@ -11,19 +11,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var handler controllers.DbHandler
+
 func main() {
 	configuration.SetPath("./configuration/")
 	configuration := configuration.GetConfiguration()
 	address := fmt.Sprintf("localhost:%d", configuration.Port)
 
-	router := getRouter(configuration) //.Methods(http.MethodPost)
+	router := getRouter(configuration)
 
 	router.Run(address)
 }
 
 func getRouter(configuration configuration.Config) *gin.Engine {
 	DB := db.Init(configuration)
-	handler := controllers.New(DB)
+	handler = controllers.New(DB)
+
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:  []string{"*"},
@@ -32,12 +35,33 @@ func getRouter(configuration configuration.Config) *gin.Engine {
 		ExposeHeaders: []string{"Content-Length"},
 	}))
 
-	router.POST("/login", handler.Login)
-	router.POST("/signup", handler.Signup)
-	router.GET("/verify", handler.Verify)
-
-	router.GET("/employee", handler.GetAllEmployees)                      //.Methods(http.MethodGet)
-	router.Use(middlewares.Auth()).POST("/employee", handler.AddEmployee) //.Methods(http.MethodPost)
+	root := router.Group("/v1")
+	AddRoutes(root)
 
 	return router
+}
+
+func authRoutes(superRoute *gin.RouterGroup) {
+	authRouter := superRoute.Group("/auth")
+	{
+		authRouter.POST("/login", handler.Login)
+		authRouter.POST("/signup", handler.Signup)
+		authRouter.GET("/verify", handler.Verify)
+	}
+}
+
+func apiRoutes(superRoute *gin.RouterGroup) {
+	router := superRoute.Group("/api")
+	{
+		router.GET("/employee", handler.GetAllEmployees)
+		router.GET("/employee/:id", handler.GetEmployee)
+		router.Use(middlewares.Auth()).POST("/employee", handler.AddEmployee)
+		router.PUT("/employee/:id", handler.UpdateEmployee)
+		router.DELETE("/employee/:id", handler.DeleteEmployee)
+	}
+}
+
+func AddRoutes(superRoute *gin.RouterGroup) {
+	authRoutes(superRoute)
+	apiRoutes(superRoute)
 }

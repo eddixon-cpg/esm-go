@@ -6,6 +6,7 @@ import (
 	"esm-backend/models/in"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +27,23 @@ func (h DbHandler) GetAllEmployees(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func (h DbHandler) GetEmployee(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+	employee, err := app.GetEmployee(id, h.DB)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if employee.EmployeeId == 0 {
+		c.JSON(http.StatusNoContent, employee)
+		return
+	}
+
+	c.JSON(http.StatusOK, employee)
+}
+
 func (h DbHandler) AddEmployee(c *gin.Context) {
 	fmt.Println("AddEmployee")
 	var employee in.EmployeeInput
@@ -41,4 +59,35 @@ func (h DbHandler) AddEmployee(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, "Employee created")
+}
+
+func (h DbHandler) UpdateEmployee(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+
+	var employee in.EmployeeInput
+	if err := c.ShouldBindJSON(&employee); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := app.UpdateEmployee(id, employee, h.DB)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, "Employee updated")
+}
+
+func (h DbHandler) DeleteEmployee(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+
+	err := app.DeleteEmployee(id, h.DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, "Employee deleted")
 }

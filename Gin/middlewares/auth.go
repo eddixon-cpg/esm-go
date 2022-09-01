@@ -14,7 +14,7 @@ func Auth() gin.HandlerFunc {
 		bearerToken := strings.Split(authHeader, " ")
 
 		if len(bearerToken) < 2 {
-			context.JSON(http.StatusForbidden, gin.H{"error": "request does not contain an access token"})
+			context.JSON(http.StatusUnauthorized, gin.H{"error": "request does not contain an access token"})
 			context.Abort()
 			return
 		}
