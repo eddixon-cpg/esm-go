@@ -3,6 +3,7 @@ package main
 import (
 	"esm-backend/configuration"
 	"esm-backend/controllers"
+	"esm-backend/controllers/concepts"
 	"esm-backend/db"
 	"esm-backend/middlewares"
 	"fmt"
@@ -18,6 +19,8 @@ func main() {
 	configuration := configuration.GetConfiguration()
 	address := fmt.Sprintf("localhost:%d", configuration.Port)
 
+	concepts.SetLocalPath("./content")
+
 	router := getRouter(configuration)
 
 	router.Run(address)
@@ -28,6 +31,10 @@ func getRouter(configuration configuration.Config) *gin.Engine {
 	handler = controllers.New(DB)
 
 	router := gin.Default()
+	//router.LoadHTMLGlob("content/**/*.html")
+	router.LoadHTMLFiles("content/index.html")
+	router.StaticFile("content/imgs/smiley.png", "./content/imgs/smiley.png")
+	router.StaticFile("favicon.ico", "./content/imgs/favicon.ico")
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:  []string{"*"},
 		AllowMethods:  []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"},
@@ -71,7 +78,17 @@ func apiRoutes(superRoute *gin.RouterGroup) {
 	}
 }
 
+func demoRoutes(superRoute *gin.RouterGroup) {
+	router := superRoute.Group("concepts")
+	{
+		router.GET("/index", concepts.Index)
+		router.GET("/", concepts.Index)
+		router.GET("/render/:id/:type", concepts.RenderType)
+	}
+}
+
 func AddRoutes(superRoute *gin.RouterGroup) {
 	authRoutes(superRoute)
 	apiRoutes(superRoute)
+	demoRoutes(superRoute)
 }

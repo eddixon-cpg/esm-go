@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+    <title>ESM</title>
+    <script>
+        function getValue() {
+            var color = document.getElementById("mycolor").value;
+            alert(color);
+        }
+    </script>
+</head>
+
+<body>
+
+    <p>This image <img src="../../content/imgs/smiley.png" alt="Smiley-image" style="vertical-align: top;"> is aligned
+        vertically top of the text.</p>
+
+    <form>
+        <label for="mycolor">Select Color:</label>
+        <input type="color" value="#00ff00" id="mycolor">
+        <button type="button" onclick="getValue();">Get Value</button>
+    </form>
+</body>
+
+</html>
