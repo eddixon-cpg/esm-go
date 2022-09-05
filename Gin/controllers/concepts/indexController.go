@@ -49,3 +49,20 @@ func RenderType(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, "Invalid format")
 	}
 }
+
+func ServingExternal(c *gin.Context) {
+	response, err := http.Get("https://es.wikipedia.org/wiki/Alemania") //"https://raw.githubusercontent.com/gin-gonic/logo/master/color.png"
+	if err != nil || response.StatusCode != http.StatusOK {
+		c.Status(http.StatusServiceUnavailable)
+		return
+	}
+
+	reader := response.Body
+	contentLength := response.ContentLength
+	contentType := response.Header.Get("Content-Type")
+
+	extraHeaders := map[string]string{}
+
+	c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
+
+}

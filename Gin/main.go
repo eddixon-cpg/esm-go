@@ -84,6 +84,7 @@ func demoRoutes(superRoute *gin.RouterGroup) {
 		router.GET("/index", concepts.Index)
 		router.GET("/", concepts.Index)
 		router.GET("/render/:name/:age/:pos/", concepts.RenderType)
+		router.GET("/serving-external", concepts.ServingExternal)
 	}
 }
 
