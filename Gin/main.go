@@ -83,7 +83,7 @@ func demoRoutes(superRoute *gin.RouterGroup) {
 	{
 		router.GET("/index", concepts.Index)
 		router.GET("/", concepts.Index)
-		router.GET("/render/:id/:type", concepts.RenderType)
+		router.GET("/render/:name/:age/:pos/", concepts.RenderType)
 	}
 }
 
