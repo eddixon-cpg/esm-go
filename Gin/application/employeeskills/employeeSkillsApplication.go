@@ -51,7 +51,7 @@ func SkillLevel(db *gorm.DB) ([]out.LevelOutput, error) {
 	var levels []domain.Level
 	var levelsOut []out.LevelOutput
 
-	result := db.Find(&levels)
+	result := db.Order("levels.Order").Find(&levels)
 
 	if result.Error != nil {
 		return make([]out.LevelOutput, 0), result.Error
