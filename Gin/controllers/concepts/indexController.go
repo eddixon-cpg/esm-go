@@ -66,3 +66,7 @@ func ServingExternal(c *gin.Context) {
 	c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
 
 }
+
+func ServingFromFile(c *gin.Context) {
+	c.File("./content/imgs/smiley.png")
+}

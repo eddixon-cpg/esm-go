@@ -11,29 +11,41 @@ import (
 )
 
 func GetAllSkills(db *gorm.DB) ([]out.SkillOutput, error) {
-	var skills []out.SkillOutput
+	var skillsOut []out.SkillOutput
+
+	var skills []domain.Skill
 
 	if result := db.Find(&skills); result.Error != nil {
-		return skills, result.Error
+		return skillsOut, result.Error
 	}
 
-	return skills, nil
+	for _, s := range skills {
+
+		skill := out.SkillOutput{SkillId: s.SkillId, Name: s.Name}
+		skillsOut = append(skillsOut, skill)
+	}
+
+	return skillsOut, nil
 }
 
 func GetSkill(id int, db *gorm.DB) (out.SkillOutput, error) {
-	var skill out.SkillOutput
+	var skillOut out.SkillOutput
+	var skill domain.Skill
 
-	result := db.Where("skillId =? ", id).First(skill)
+	result := db.Where("skillId =? ", id).First(&skill)
 
 	if result.Error != nil {
-		return skill, result.Error
+		return skillOut, result.Error
 	}
 
-	if skill.SkillId == 0 {
-		return skill, errors.New("skill not found")
+	if skillOut.SkillId == 0 {
+		return skillOut, errors.New("skill not found")
 	}
 
-	return skill, nil
+	skillOut.SkillId = skill.SkillId
+	skillOut.Name = skill.Name
+
+	return skillOut, nil
 }
 
 func AddSkill(skillIn in.SkillInput, db *gorm.DB) error {
