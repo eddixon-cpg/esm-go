@@ -11,6 +11,8 @@ var path string
 type Config struct {
 	ConnectionString string
 	Port             int
+	LogToFile        bool
+	LogPath          string
 }
 
 func SetPath(_path string) {

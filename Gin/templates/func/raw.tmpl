@@ -1,0 +1,12 @@
+{{ define "func/raw.tmpl" }}
+<html>
+<head>
+  <title>  {{ .title }} </title>
+</head>
+<h2>
+  {{ .name }} has {{ .count}} bank accounts
+</h2>
+
+<p>Today using Func is: {{.now | formatAsDate }} </p>
+</html>
+{{ end }}

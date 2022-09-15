@@ -1,12 +1,18 @@
 package main
 
 import (
+	"errors"
 	"esm-backend/configuration"
 	"esm-backend/controllers"
 	"esm-backend/controllers/concepts"
 	"esm-backend/db"
 	"esm-backend/middlewares"
 	"fmt"
+	"html/template"
+	"io"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -22,7 +28,7 @@ func main() {
 	concepts.SetLocalPath("./content")
 
 	router := getRouter(configuration)
-
+	fmt.Println("runing ", address)
 	router.Run(address)
 }
 
@@ -30,11 +36,22 @@ func getRouter(configuration configuration.Config) *gin.Engine {
 	DB := db.Init(configuration)
 	handler = controllers.New(DB)
 
+	configurateLog(configuration)
+
 	router := gin.Default()
-	//router.LoadHTMLGlob("content/**/*.html")
+
+	router.Delims("{{", "}}")
+	router.SetFuncMap(template.FuncMap{
+		"formatAsDate": formatAsDate,
+	})
+
 	router.LoadHTMLFiles("content/index.html")
-	router.StaticFile("content/imgs/smiley.png", "./content/imgs/smiley.png")
+	//router.LoadHTMLGlob("templates/**/*.tmpl") // TODO I shoultry this later!!!!
+	//router.LoadHTMLGlob("templates/**")
+	router.LoadHTMLGlob("templates/**/*")
+	//router.LoadHTMLGlob("templates/*.*")
 	router.StaticFile("favicon.ico", "./content/imgs/favicon.ico")
+	router.Static("/content", "./content")
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:  []string{"*"},
 		AllowMethods:  []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"},
@@ -79,13 +96,23 @@ func apiRoutes(superRoute *gin.RouterGroup) {
 }
 
 func demoRoutes(superRoute *gin.RouterGroup) {
-	router := superRoute.Group("concepts")
+	router := superRoute.Group("/concepts")
 	{
 		router.GET("/index", concepts.Index)
 		router.GET("/", concepts.Index)
 		router.GET("/render/:name/:age/:pos/", concepts.RenderType)
 		router.GET("/serving-external", concepts.ServingExternal)
 		router.GET("/serving-from-file", concepts.ServingFromFile)
+		router.POST("/login", concepts.LoginFromForm)
+		router.GET("/map-from-query", concepts.MapFromQueryString)
+		router.POST("/map-from-form", concepts.MapFromPostForm)
+		router.POST("/upload-file", concepts.Upload)
+		router.GET("/get-cookie", concepts.GetCookie)
+		router.GET("/posts/index", concepts.PostIndex)
+		router.GET("/users/index", concepts.UserIndex)
+		router.POST("/redirect", concepts.Redirect)
+		router.GET("/redirect", concepts.Redirect)
+		router.GET("/custom-template-func", concepts.CustomTemplateFunc)
 	}
 }
 
@@ -93,4 +120,30 @@ func AddRoutes(superRoute *gin.RouterGroup) {
 	authRoutes(superRoute)
 	apiRoutes(superRoute)
 	demoRoutes(superRoute)
+}
+
+func configurateLog(configuration configuration.Config) {
+	if configuration.LogToFile {
+		gin.DisableConsoleColor()
+
+		if _, err := os.Stat(configuration.LogPath); err == nil {
+		} else if errors.Is(err, os.ErrNotExist) {
+			dir := filepath.Dir(configuration.LogPath)
+			os.MkdirAll(dir, os.ModeDir)
+		} else {
+			fmt.Print("ERROR on logPAth ", err)
+		}
+
+		f, err := os.Create(configuration.LogPath)
+		fmt.Println("creating gin.log was ", err)
+		gin.DefaultWriter = io.MultiWriter(f)
+	}
+}
+
+func formatAsDate(t time.Time) string {
+	year, month, day := t.Date()
+	hour, min, sec := t.Clock()
+	date := fmt.Sprintf("%d/%02d/%02d %02d:%02d:%02d", year, month, day, hour, min, sec)
+	fmt.Println("date is ", date)
+	return date
 }
