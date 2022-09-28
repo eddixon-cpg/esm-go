@@ -1,6 +1,6 @@
 {
   "ConnectionString": "host=localhost user=postgres password=Monitor25* dbname=esm port=5432 sslmode=disable",
   "Port": 4005,
-  "LogToFile": true,
+  "LogToFile": false,
   "LogPath": "c:/files/logs/t/gin.log"
 }

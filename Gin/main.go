@@ -87,10 +87,14 @@ func apiRoutes(superRoute *gin.RouterGroup) {
 		router.Use(middlewares.Auth()).GET("/skill/:id", handler.GetSkill)
 		router.Use(middlewares.Auth()).POST("/skill", handler.AddSkill)
 		router.Use(middlewares.Auth()).DELETE("/skill/:id", handler.DeleteSkill)
+
 		router.Use(middlewares.Auth()).POST("/assign-skill", handler.AssignSkill)
 		router.Use(middlewares.Auth()).DELETE("/remove-skill/:employeeid/:skillid", handler.RemoveSkill)
 		router.Use(middlewares.Auth()).GET("/employee-skills/:employeeid", handler.GetEmployeeSkills)
+
 		router.Use(middlewares.Auth()).GET("/level", handler.SkillLevel)
+
+		router.Use(middlewares.Auth()).GET("/designations", handler.GetAllDesignations)
 
 	}
 }

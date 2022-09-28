@@ -48,13 +48,20 @@ type SkillOutput struct {
 }
 
 type EmployeSkillsOutput struct {
-	Skill      string
-	Level      string
-	Experience int
+	Skillid    int64  `json:"skillId" `
+	Employeeid int64  `json:"employeeId"`
+	Skill      string `json:"skill"`
+	Level      string `json:"level"`
+	Experience int    `json:"experience"`
 }
 
 type LevelOutput struct {
-	LevelId int    ` gorm:"primaryKey;autoIncrement:true"`
+	LevelId int    `gorm:"primaryKey;autoIncrement:true"`
 	Name    string `gorm:"type:varchar(20)"`
 	Order   int
+}
+
+type DesignationOutput struct {
+	DesignationId int
+	Name          string
 }

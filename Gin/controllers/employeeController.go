@@ -90,3 +90,19 @@ func (h DbHandler) DeleteEmployee(c *gin.Context) {
 
 	c.JSON(http.StatusOK, "Employee deleted")
 }
+
+func (h DbHandler) GetAllDesignations(c *gin.Context) {
+
+	result, err := app.GetAllDesignations(h.DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(result) == 0 {
+		c.JSON(http.StatusNoContent, result)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}

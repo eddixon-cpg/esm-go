@@ -5,14 +5,12 @@ import (
 	"esm-backend/models/domain"
 	"esm-backend/models/in"
 	"esm-backend/models/out"
-	"fmt"
 	"strings"
 
 	"gorm.io/gorm"
 )
 
 func GetAllEmployees(db *gorm.DB) (employees []out.EmployeeOut, err error) {
-	fmt.Println("GetAllEmployees APP")
 	var _error error
 
 	var employeesOut []out.EmployeeOut
@@ -102,4 +100,25 @@ func DeleteEmployee(id int, db *gorm.DB) error {
 	}
 
 	return nil
+}
+
+func GetAllDesignations(db *gorm.DB) ([]out.DesignationOutput, error) {
+	var _error error
+	var designations []domain.Designation
+	var designationsOutput []out.DesignationOutput
+
+	result := db.Find(&designations)
+	if result.Error != nil {
+		return make([]out.DesignationOutput, 0), result.Error
+	}
+
+	for _, designation := range designations {
+		var data out.DesignationOutput
+		data.DesignationId = designation.DesignationId
+		data.Name = designation.Name
+
+		designationsOutput = append(designationsOutput, data)
+	}
+
+	return designationsOutput, _error
 }

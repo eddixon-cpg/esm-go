@@ -34,8 +34,8 @@ func RemoveSkill(employeeid int, skillid int, db *gorm.DB) (err error) {
 func GetEmployeeSkills(employeeid int, db *gorm.DB) (employeeSkills []out.EmployeSkillsOutput, err error) {
 
 	result := db.Table("employee_skills es").
-		Select("s.name as Skill, l.name as Level, es.Experience as Experience").
-		Joins("inner join levels l on l.level_id = es.level_id inner join skills s on s.skill_id = es.skill_skill_id").
+		Select("s.skill_id AS SkillId, es.Employee_employee_id AS EmployeeId, s.name AS Skill, l.name AS Level, es.Experience AS Experience").
+		Joins("INNER JOIN levels l ON l.level_id = es.level_id INNER JOIN skills s ON s.skill_id = es.skill_skill_id").
 		Where("es.Employee_employee_id = ?", employeeid).
 		Scan(&employeeSkills)
 
@@ -45,6 +45,23 @@ func GetEmployeeSkills(employeeid int, db *gorm.DB) (employeeSkills []out.Employ
 	}
 
 	return employeeSkills, nil
+}
+
+func GetSkillsByEmployeeId(id int, db *gorm.DB) {
+	var skillByEmployee SkillsByEmployeeDTO
+	db.Table("employees").
+		Select("skills.id as skillId, skills.skill, levels.id as levelId, levels.name as level, employee_skills.experience as experience").
+		Joins("JOIN employee_skills ON employee_skills.employee_id = employees.id JOIN skills ON skills.id = employee_skills.skill_id JOIN levels ON levels.id = employee_skills.level_id").
+		Where("employees.id = ?", id).
+		Scan(&skillByEmployee)
+}
+
+type SkillsByEmployeeDTO struct {
+	Skillid    int64  `json:"skillID" `
+	Skill      string `json:"skill"`
+	Levelid    int64  `json:"levelId"`
+	Level      string `json:"level"`
+	Experience int64  `json:"experience"`
 }
 
 func SkillLevel(db *gorm.DB) ([]out.LevelOutput, error) {
